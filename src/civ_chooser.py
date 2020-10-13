@@ -33,12 +33,17 @@ class App:
         tk.Button(undo_frame, text="Refresh Choices", command=self.assign_picks).grid(row=7, column=5, pady=10, padx=5)
 
     def assign_picks(self):
-        colors = ["Yellow", "Yellow", "Brown", "Brown", "Black", "Black", "Blue", "Blue", "Grey", "Grey", "Red", "Red"]
+        colors = ["Yellow", "Yellow", "Brown", "Brown", "Black", "Black", "Blue", "Blue", "Grey", "Grey", "Red", "Red", "Green", "Green"]
         civs = ["Fakirs", "Nomads", "Halflings", "Cultists", "Darklings", "Alchemists", "Mermaids", "Swarmlings",
-                "Engineers", "Dwarves", "Chaos_Magicians", "Giants"]
+                "Engineers", "Dwarves", "Chaos_Magicians", "Giants", "Witches", "Auren"]
 
         indices = [civs.index(civ) for civ in self.chosen]
-        [indices.append(index + 1) for index in indices if index % 2 == 0]
+
+        for civ in self.chosen:
+            if civs.index(civ) % 2 == 0:
+                indices.append(civs.index(civ) + 1)
+            elif civs.index(civ) % 2 == 1:
+                indices.append(civs.index(civ) - 1)
 
         available_civs = [i for j, i in enumerate(civs) if j not in indices]
         available_colors = [i for j, i in enumerate(colors) if j not in indices]
@@ -69,7 +74,6 @@ class App:
 
     def command(self, c):
         if len(self.chosen) < 5:
-
             self.background_label.configure(image=None)
             self.background_label.photo = None
             self.background_label.pack()
@@ -77,7 +81,8 @@ class App:
             self.chosen.append(self.chosen_three[c])
             self.previous_choices.append(self.chosen_three)
             self.create_chosen_string()
-            self.assign_picks()
+            if len(self.chosen) < 4:
+                self.assign_picks()
         else:
             print("Error: cannot have more than 5 civs in a game.")
 
