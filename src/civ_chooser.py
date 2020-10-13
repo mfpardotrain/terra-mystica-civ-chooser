@@ -73,6 +73,7 @@ class App:
         self.chosen_string = f"{', '.join(self.chosen)}"
         ttk.Label(self.win, name="chosen_string", text=f"Chosen: {self.chosen_string}").pack(side="left")
 
+
 win = tk.Tk()
 App(win=win, n_choices=3)
 win.mainloop()
