@@ -1,6 +1,5 @@
 import random
 import tkinter as tk
-from tkinter import ttk
 
 
 class App:
@@ -18,6 +17,10 @@ class App:
         self.assign_picks()
 
         self.chosen_string = ""
+
+        self.chosen_frame = tk.Frame(self.win)
+        self.chosen_frame.pack(side="left")
+
         undo_frame = tk.Frame(self.win)
         undo_frame.pack(side="right")
         tk.Button(undo_frame, text="Undo Pick", command=self.undo).grid(row=6, column=5, padx=10)
@@ -71,7 +74,8 @@ class App:
 
     def create_chosen_string(self):
         self.chosen_string = f"{', '.join(self.chosen)}"
-        ttk.Label(self.win, name="chosen_string", text=f"Chosen: {self.chosen_string}").pack(side="left")
+        chosen_label = tk.Label(self.chosen_frame, name="chosen_string", text=f"Chosen: {self.chosen_string}", wraplength=200)
+        chosen_label.grid(row=6, column=0, padx=5)
 
 
 win = tk.Tk()
