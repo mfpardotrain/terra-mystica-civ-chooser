@@ -13,6 +13,7 @@ class App:
         self.n_choices = n_choices
         self.button_list = []
         self.chosen_three = []
+        self.previous_choices = []
 
         self.assign_picks()
 
@@ -26,27 +27,32 @@ class App:
         tk.Button(undo_frame, text="Undo Pick", command=self.undo).grid(row=6, column=5, padx=10)
         tk.Button(undo_frame, text="Refresh Choices", command=self.assign_picks).grid(row=7, column=5, pady=10, padx=5)
 
-    def assign_picks(self):
-        colors = ["Yellow", "Yellow", "Brown", "Brown", "Black", "Black", "Blue", "Blue", "Grey", "Grey", "Red", "Red"]
-        civs = ["Fakirs", "Nomads", "Halflings", "Cultists", "Darklings", "Alchemists", "Mermaids", "Swarmlings",
-                "Engineers", "Dwarves", "Chaos Magicians", "Giants"]
+    def assign_picks(self, undo=False):
+        if undo:
+            self.render_button_choices()
+        else:
+            colors = ["Yellow", "Yellow", "Brown", "Brown", "Black", "Black", "Blue", "Blue", "Grey", "Grey", "Red", "Red"]
+            civs = ["Fakirs", "Nomads", "Halflings", "Cultists", "Darklings", "Alchemists", "Mermaids", "Swarmlings",
+                    "Engineers", "Dwarves", "Chaos Magicians", "Giants"]
 
-        indices = [civs.index(civ) for civ in self.chosen]
-        [indices.append(index + 1) for index in indices if index % 2 == 0]
+            indices = [civs.index(civ) for civ in self.chosen]
+            [indices.append(index + 1) for index in indices if index % 2 == 0]
 
-        available_civs = [i for j, i in enumerate(civs) if j not in indices]
-        available_colors = [i for j, i in enumerate(colors) if j not in indices]
+            available_civs = [i for j, i in enumerate(civs) if j not in indices]
+            available_colors = [i for j, i in enumerate(colors) if j not in indices]
 
-        randomized = random.sample(range(0, len(available_civs)), len(available_civs))
-        randomized_civs = [available_civs[i] for i in randomized]
-        randomized_colors = [available_colors[i] for i in randomized]
+            randomized = random.sample(range(0, len(available_civs)), len(available_civs))
+            randomized_civs = [available_civs[i] for i in randomized]
+            randomized_colors = [available_colors[i] for i in randomized]
 
-        civ_dict = dict(zip(randomized_colors, randomized_civs))
+            civ_dict = dict(zip(randomized_colors, randomized_civs))
 
-        sample = random.sample(civ_dict.keys(), self.n_choices)
+            sample = random.sample(civ_dict.keys(), self.n_choices)
 
-        self.chosen_three = [civ_dict[color] for color in sample]
+            self.chosen_three = [civ_dict[color] for color in sample]
+            self.render_button_choices()
 
+    def render_button_choices(self):
         button_frame = tk.Frame(self.win)
         button_frame.pack()
 
@@ -59,6 +65,7 @@ class App:
     def command(self, c):
         if len(self.chosen) < 5:
             self.chosen.append(self.chosen_three[c])
+            self.previous_choices.append(self.chosen_three)
             self.create_chosen_string()
             self.assign_picks()
         else:
@@ -68,7 +75,10 @@ class App:
         if (len(self.chosen) > 0):
             self.chosen.pop()
             self.create_chosen_string()
-            self.assign_picks()
+
+            self.chosen_three = self.previous_choices[len(self.previous_choices) - 1]
+            self.previous_choices.pop()
+            self.render_button_choices()
         else:
             print("Error: none chosen")
 
