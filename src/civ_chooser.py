@@ -1,9 +1,13 @@
 import random
 import tkinter as tk
+import os
+import sys
 
 
 class App:
     def __init__(self, win, n_choices):
+        os.chdir(os.path.dirname(sys.argv[0]))
+        print(os.getcwd())
         self.win = win
         self.win.title("Terra Mystica Civ Chooser")
         self.win.geometry("800x500")
@@ -95,7 +99,7 @@ class App:
         chosen_label.grid(row=6, column=0, padx=5)
 
     def on_enter(self, name, e):
-        background_image = tk.PhotoImage(file=f"src/images/{name}.gif")
+        background_image = tk.PhotoImage(file=f"images/{name}.gif")
         self.background_label.configure(image=background_image)
         self.background_label.photo = background_image
         self.background_label.pack()
