@@ -1,7 +1,6 @@
 
 class Faction:
-    def __init__(self, color, name, image, index, is_chosen, is_available):
-        self.index = index
+    def __init__(self, color, name, image, is_chosen, is_available):
         self.color = color
         self.name = name
         self.image = image

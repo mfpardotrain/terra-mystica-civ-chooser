@@ -24,7 +24,7 @@ class App:
                 "Engineers", "Dwarves", "Chaos_Magicians", "Giants", "Witches", "Auren"]
         self.factions = []
         for i in range(0, len(colors)):
-            self.factions.append(Faction(color=colors[i], name=civs[i], image=f"images/{civs[i]}.gif", index=i,
+            self.factions.append(Faction(color=colors[i], name=civs[i], image=f"images/{civs[i].lower()}.gif",
                                  is_chosen=False, is_available=True))
 
         self.assign_picks()
@@ -42,8 +42,8 @@ class App:
 
     def assign_picks(self):
         available_civs = [faction for faction in self.factions if faction.is_available]
-        sample = random.sample(available_civs, self.n_choices)
-        self.to_choose = [faction for faction in sample]
+        print([f.name for f in available_civs])
+        self.to_choose = random.sample(available_civs, self.n_choices)
         self.render_button_choices()
 
     def render_button_choices(self):
@@ -63,7 +63,7 @@ class App:
     def command(self, c):
         f = self.to_choose[c]
         n_chosen = len([faction for faction in self.factions if faction.is_chosen])
-        other_color = [faction for faction in self.factions if faction.color == f.color][0]
+        other_color = [faction for faction in self.factions if faction.color == f.color and faction != f][0]
         if n_chosen < 5:
             self.background_label.configure(image=None)
             self.background_label.photo = None
@@ -85,7 +85,11 @@ class App:
         last_choices = self.previous_choices[len(self.previous_choices) - 1]
         if n_chosen > 0:
             previous_choice = [faction for faction in last_choices if faction.is_chosen][0]
+            other_color = [faction for faction in self.factions if faction.color == previous_choice.color][0]
             previous_choice.is_chosen = False
+            previous_choice.is_available = True
+            other_color.is_available = True
+
             self.create_chosen_string()
 
             self.to_choose = last_choices
